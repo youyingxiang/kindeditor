@@ -22,5 +22,12 @@
       "Yxx\\Kindeditor\\": "src/"
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Yxx\\Kindeditor\\EditorProvider"
+      ]
+    }
+  },
   "minimum-stability": "stable"
 }

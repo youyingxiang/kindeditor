@@ -60,7 +60,7 @@ class UploadController extends Controller {
 
     public function check($imgFile) {
         $size = $imgFile->getSize();
-        $ext  = $imgFile->extension()?:$imgFile->getClientOriginalExtension();
+        $ext  = $imgFile->getClientOriginalExtension()?:$imgFile->extension();
 
 
         $size_name      = $this->up_type."_size";
