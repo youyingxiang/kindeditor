@@ -13,7 +13,8 @@
   $form->kindeditor('content', '内容');
 # 配置文件
 config/editor.php
-<p align="center">
+
+return [
     'route' => [
 
         'prefix' => env('ADMIN_ROUTE_PREFIX', 'yxx'),
@@ -28,7 +29,8 @@ config/editor.php
         "file_size"     => 1024*1024*100,                                               // 上传文件大小
         "image_format"  => "jpg,gif,jpeg,png,bmp,svg",                                  // 上传图片格式
         "file_format"   => "doc,docx,xls,xlsx,ppt,htm,html,txt,rar,zip,mp4,pdf,pptx",   // 上传文件格式
-        "upload_path"   => "uploads",                                                   // 上传文件目录
+        "upload_path"   => "uploads",                                           // 上传文件目录
     ],
-</p>
+];
+
 
