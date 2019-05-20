@@ -1,0 +1,37 @@
+{
+  "name": "yxx/kindeditor",
+  "description": "laravel-admin kindeditor",
+  "type": "library",
+  "keywords": ["laravel", "admin", "kindeditor"],
+  "require": {
+    "php": ">=7.0.0",
+    "symfony/dom-crawler": "~3.1|~4.0",
+    "laravel/framework": "~5.5",
+    "doctrine/dbal": "2.*",
+    "encore/laravel-admin": "~1.6"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "yxx",
+      "email": "1365831278@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Yxx\\Kindeditor\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Yxx\\Kindeditor\\EditorProvider::class"
+      ],
+      "aliases": {
+        "Editor": "Yxx\\Kindeditor\\Facades\\Editor::class"
+      }
+
+    }
+  },
+  "minimum-stability": "stable"
+}
