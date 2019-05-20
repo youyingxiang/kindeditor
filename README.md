@@ -1,8 +1,8 @@
 # kindeditor
--1: git clone https://github.com/laravel/laravel.git
--2: composer update
--3: composer require yxx/kindeditor
--4: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
+- 1: git clone https://github.com/laravel/laravel.git
+- 2: composer update
+- 3: composer require yxx/kindeditor
+- 4: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
 -5: 项目config/app.confg  
   -'providers' 添加 Yxx\Kindeditor\EditorProvider::class
   -'aliases'   添加 'Editor' => Yxx\Kindeditor\Facades\Editor::class
