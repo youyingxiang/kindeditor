@@ -14,7 +14,6 @@
 # 配置文件
 config/editor.php
 <p align="center">
-  return [
     'route' => [
 
         'prefix' => env('ADMIN_ROUTE_PREFIX', 'yxx'),
