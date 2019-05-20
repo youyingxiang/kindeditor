@@ -3,11 +3,11 @@
 - 2: composer update
 - 3: composer require yxx/kindeditor
 - 4: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
--5: 项目config/app.confg  
-  -'providers' 添加 Yxx\Kindeditor\EditorProvider::class
-  -'aliases'   添加 'Editor' => Yxx\Kindeditor\Facades\Editor::class
--6: 运行 php artisan vendor:publish --provider="Yxx\Kindeditor\EditorProvider"
--7: php artisan storage:link  建立软连接
+- 5: 项目config/app.confg  
+  - 'providers' 添加 Yxx\Kindeditor\EditorProvider::class
+  - 'aliases'   添加 'Editor' => Yxx\Kindeditor\Facades\Editor::class
+- 6: 运行 php artisan vendor:publish --provider="Yxx\Kindeditor\EditorProvider"
+- 7: php artisan storage:link  建立软连接
 
 # 项目中使用kindeditor编辑器
   $form->kindeditor('content', '内容');
