@@ -14,13 +14,7 @@
 # 配置文件
 config/editor.php
 
-<?php
-/**
- * Created by PhpStorm.
- * User: youxingxiang
- * Date: 2019/5/20
- * Time: 10:33 AM
- */
+
 return [
     'route' => [
 
