@@ -15,7 +15,7 @@
 config/editor.php
 
 
-return [
+
     'route' => [
 
         'prefix' => env('ADMIN_ROUTE_PREFIX', 'yxx'),
@@ -32,6 +32,6 @@ return [
         "file_format"   => "doc,docx,xls,xlsx,ppt,htm,html,txt,rar,zip,mp4,pdf,pptx",   // 上传文件格式
         "upload_path"   => "uploads",                                                   // 上传文件目录
     ],
-];
+
 
 
