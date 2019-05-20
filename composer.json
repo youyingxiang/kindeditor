@@ -21,17 +21,6 @@
     "psr-4": {
       "Yxx\\Kindeditor\\": "src/"
     }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Yxx\\Kindeditor\\EditorProvider::class"
-      ],
-      "aliases": {
-        "Editor": "Yxx\\Kindeditor\\Facades\\Editor::class"
-      }
-
-    }
-  },
+  }
   "minimum-stability": "stable"
 }
