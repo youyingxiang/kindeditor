@@ -1,13 +1,9 @@
 # kindeditor
-- 1: git clone https://github.com/laravel/laravel.git(安装laravel)
-- 2: composer update (安装依赖包)
-- 3: composer require yxx/kindeditor (安装kindeditor富文本编辑器拓展)
-- 4: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
-- 5: 项目config/app.confg  
-  - 'providers' 添加 Yxx\Kindeditor\EditorProvider::class
-  - 'aliases'   添加 'Editor' => Yxx\Kindeditor\Facades\Editor::class
-- 6: 运行 php artisan vendor:publish --provider="Yxx\Kindeditor\EditorProvider"
-- 7: php artisan storage:link  建立软连接
+- 1: git clone https://github.com/laravel/laravel.git  (安装laravel)
+- 2: composer require yxx/kindeditor (安装kindeditor富文本编辑器拓展)
+- 3: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
+- 4: 运行 php artisan vendor:publish --provider="Yxx\Kindeditor\EditorProvider"
+- 5: php artisan storage:link  建立软连接
 
 # 项目中使用kindeditor编辑器
   $form->kindeditor('content', '内容');
