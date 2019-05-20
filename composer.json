@@ -21,6 +21,6 @@
     "psr-4": {
       "Yxx\\Kindeditor\\": "src/"
     }
-  }
+  },
   "minimum-stability": "stable"
 }
