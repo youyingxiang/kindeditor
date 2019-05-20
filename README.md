@@ -1,7 +1,7 @@
 # kindeditor
-- 1: git clone https://github.com/laravel/laravel.git
-- 2: composer update
-- 3: composer require yxx/kindeditor
+- 1: git clone https://github.com/laravel/laravel.git(安装laravel)
+- 2: composer update (安装依赖包)
+- 3: composer require yxx/kindeditor (安装kindeditor富文本编辑器拓展)
 - 4: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
 - 5: 项目config/app.confg  
   - 'providers' 添加 Yxx\Kindeditor\EditorProvider::class
@@ -14,6 +14,13 @@
 # 配置文件
 config/editor.php
 
+<?php
+/**
+ * Created by PhpStorm.
+ * User: youxingxiang
+ * Date: 2019/5/20
+ * Time: 10:33 AM
+ */
 return [
     'route' => [
 
