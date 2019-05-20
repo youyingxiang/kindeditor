@@ -26,7 +26,10 @@
     "laravel": {
       "providers": [
         "Yxx\\Kindeditor\\EditorProvider"
-      ]
+      ],
+      "aliases": {
+        "Editor": "Yxx\\Kindeditor\\Facades\\Editor::class"
+      }
     }
   },
   "minimum-stability": "stable"
