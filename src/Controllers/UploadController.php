@@ -29,6 +29,7 @@ class UploadController extends Controller {
         "media_format"  => "mp3,mp4,avi",                                               // 上传视音频格式
         "flash_format"  => "swf,fla",                                                   // 上传flash格式
         "upload_path"   => "uploads",                                                   // 上传文件目录
+        "show_domain"   => 1,                                                           // 是否显示带域名的完整路径
     ];
 
 
@@ -53,7 +54,8 @@ class UploadController extends Controller {
                 $this->check($imgfile);
                 $path = Storage::putFile($this->file_move_path, $imgfile);
                 $path = Storage::url($path);
-                return $this->ajaxReturn("",asset($path));
+                $show_domain = $this->getUpConfig()['show_domain'];
+                return $this->ajaxReturn("",$show_domain?asset($path):$path);
             } else {
                 abort(401, '请选择文件');
             }
