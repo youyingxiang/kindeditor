@@ -34,7 +34,6 @@ config/editor.php
             "media_format"  => "mp3,mp4,avi",                                               // 上传视音频格式
             "flash_format"  => "swf,fla",                                                   // 上传flash格式
             "upload_path"   => "uploads",                                                   // 上传文件目录
-            "show_domain"   => 1,                                                           // 是否显示带域名的完整路径                                                  // 上传文件目录
         ],
 
 

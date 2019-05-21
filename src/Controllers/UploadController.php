@@ -29,7 +29,7 @@ class UploadController extends Controller {
         "media_format"  => "mp3,mp4,avi",                                               // 上传视音频格式
         "flash_format"  => "swf,fla",                                                   // 上传flash格式
         "upload_path"   => "uploads",                                                   // 上传文件目录
-        "show_domain"   => 1,                                                           // 是否显示带域名的完整路径
+       // "show_domain"   => 1,                                                           // 是否显示带域名的完整路径
     ];
 
 
@@ -52,10 +52,9 @@ class UploadController extends Controller {
             if ($request->hasFile('imgFile') && $request->file('imgFile')->isValid()) {
                 $imgfile   = $request->imgFile;
                 $this->check($imgfile);
-                $path = Storage::putFile($this->file_move_path, $imgfile);
-                $path = str_replace("storage/\public","storage",Storage::url($path));
-                $show_domain = $this->getUpConfig()['show_domain'];
-                return $this->ajaxReturn("",$show_domain?asset($path):$path);
+                $path = Storage::disk('public')->putFile($this->file_move_path, $imgfile);
+                $path = Storage::disk('public')->url($path);
+                return $this->ajaxReturn("",$path);
             } else {
                 abort(401, '请选择文件');
             }
@@ -119,7 +118,7 @@ class UploadController extends Controller {
 
     public function setFileMovePath():void
     {
-        $this->file_move_path = DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.$this->config['upload_path'].DIRECTORY_SEPARATOR .$this->getDir();
+        $this->file_move_path = DIRECTORY_SEPARATOR.$this->config['upload_path'].DIRECTORY_SEPARATOR .$this->getDir();
 
     }
 
