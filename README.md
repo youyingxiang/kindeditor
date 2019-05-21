@@ -7,6 +7,7 @@
 
 # 项目中使用kindeditor编辑器
   $form->kindeditor('content', '内容');
+  <p align="center"><img src="https://www.zkteco.com/cn/uploads/image/20190521/9d1007e5c9d4f5563db9aac56f3ea8d2.jpg"></p>
 # 配置文件
 config/editor.php
 
