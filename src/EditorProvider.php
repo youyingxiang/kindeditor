@@ -25,6 +25,7 @@ class EditorProvider extends ServiceProvider
 
         Admin::booting(function () {
             Form::extend('kindeditor', KindEditor::class);
+            Form::extend('fileupload', FileUpload::class);
         });
     }
 
