@@ -53,7 +53,7 @@ class UploadController extends Controller {
                 $imgfile   = $request->imgFile;
                 $this->check($imgfile);
                 $path = Storage::putFile($this->file_move_path, $imgfile);
-                $path = Storage::url($path);
+                $path = str_replace("storage/\public","storage",Storage::url($path));
                 $show_domain = $this->getUpConfig()['show_domain'];
                 return $this->ajaxReturn("",$show_domain?asset($path):$path);
             } else {
