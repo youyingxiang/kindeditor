@@ -34,6 +34,9 @@ class FileUpload extends Field{
         $this->script = <<<EOT
 $(".file_img_up").fileupload({
         dataType: 'json',
+        formData: function (form) {
+           return ([{name: '_token', value: "$csrf_token"}]);
+        },
         done: function (e, data) {
             if (data.result.error === 0) {
                 var up_url = data.result.url.trim();
