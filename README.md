@@ -1,13 +1,15 @@
-# kindeditor
+# kindeditor与fileupload上传组件
 - 1: git clone https://github.com/laravel/laravel.git  (安装laravel)
-- 2: composer require yxx/kindeditor (安装kindeditor富文本编辑器拓展)
+- 2: composer require yxx/kindeditor (安装富文本编辑器拓展)
 - 3: 如果没有安装laravel-admin,参考一下网址操作 -**[laravel-admin](https://laravel-admin.org/docs/zh/installation)**
 - 4: 运行 php artisan vendor:publish --provider="Yxx\Kindeditor\EditorProvider"
 - 5: php artisan storage:link  建立软连接
 
-# 项目中使用kindeditor编辑器
+## 项目中使用kindeditor编辑器
   $form->kindeditor('content', '内容');
-  <p align="center"><img src="https://www.zkteco.com/en/uploads/image/20190521/946baff44e77c6a54a019ad28ada86f9.jpg"></p>
+## 项目中使用fileupload单图片上传
+  $form->fileupload('img', '图像'); 
+  <p align="center"><img src="https://www.zkteco.com/en/uploads/image/20190521/c9dc8d9f4503c979d2f010e5d491135a.jpg"></p>
 # 配置文件
 config/editor.php
 
@@ -32,6 +34,7 @@ config/editor.php
             "media_format"  => "mp3,mp4,avi",                                               // 上传视音频格式
             "flash_format"  => "swf,fla",                                                   // 上传flash格式
             "upload_path"   => "uploads",                                                   // 上传文件目录
+            "show_domain"   => 1,                                                           // 是否显示带域名的完整路径                                                  // 上传文件目录
         ],
 
 
