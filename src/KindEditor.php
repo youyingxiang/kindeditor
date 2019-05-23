@@ -32,7 +32,7 @@ class KindEditor extends Field{
     {
         $name = $this->formatName($this->column);
         $upload_url = route("kindeditor.upload");
-        $manage_url = route("kindeditor.upload");
+        $manage_url = route("kindeditor.manager");
         $delete_url = route("kindeditor.delete");
         $csrf_token = csrf_token();
 
