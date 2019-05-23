@@ -173,7 +173,7 @@ class UploadController extends Controller {
                     ];
 
                 }
-
+                $data['current_path'] = str_replace("\\",DS,$data['current_path']);
                 // 不允许使用..移动到上一级目录
                 if (preg_match('/\.\./', $data['current_path'])) {
                     abort(403,"不允许访问！");
@@ -257,8 +257,8 @@ class UploadController extends Controller {
     public function delete()
     {
         $data    = request()->post();
-
-        $del_url = str_replace(DS."storage",DS,$data['del_url']);
+        $del_url = str_replace("\\",DS,$data['del_url']);
+        $del_url = str_replace(DS."storage",DS,$del_url);
 
         if ($data['dir'] == 'dir') {
             $del_res = Storage::disk('public')->deleteDirectory($del_url);
