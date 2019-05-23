@@ -173,13 +173,13 @@ class UploadController extends Controller {
                     ];
 
                 }
-                $data['current_path'] = str_replace("\\",DS,$data['current_path']);
+
                 // 不允许使用..移动到上一级目录
                 if (preg_match('/\.\./', $data['current_path'])) {
                     abort(403,"不允许访问！");
                 }
                 // 最后一个字符不是/
-                if (!preg_match('/\/$/', $data['current_path'])) {
+                if (!preg_match('/[\/|\\\]$/', $data['current_path'])) {
                     abort(400,"目录参数不正确");
                 }
                 // 目录不存在或不是目录
