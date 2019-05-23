@@ -10,6 +10,9 @@
 ## 项目中使用fileupload单图片上传
   $form->fileupload('img', '图像'); 
   <p align="center"><img src="https://www.zkteco.com/en/uploads/image/20190521/c9dc8d9f4503c979d2f010e5d491135a.jpg"></p>
+## 上传图片文件管理(删除目录和图片文件)
+  <p align="center"><img src="https://www.zkteco.com/en/uploads/image/20190523/366b7210c35ad7170d59d1a01cb80a7e.jpg"></p>
+  <p align="center"><img src="https://www.zkteco.com/en/uploads/image/20190523/b92cc69f6598e818f516d073a13f72d0.jpg"></p>
 # 配置文件
 config/editor.php
 
