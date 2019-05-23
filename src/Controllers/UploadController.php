@@ -38,11 +38,13 @@ class UploadController extends Controller {
 
     public function __construct(Request $request)
     {
+        define('DS', DIRECTORY_SEPARATOR);
         $type = $request->input('dir','image');
         $this->setUpType($type);
         $this->setUpConfig((array)config('editor.up_config'));
         $this->setFileMovePath();
         $this->setOrder($request->input('order','name'));
+        $this->setRootPath("public");
 
     }
 
@@ -113,12 +115,12 @@ class UploadController extends Controller {
 
     public function getDir()
     {
-        return $this->up_type.DIRECTORY_SEPARATOR.date("Y").DIRECTORY_SEPARATOR.date("m").DIRECTORY_SEPARATOR.date("d");
+        return $this->up_type.DS.date("Y").DS.date("m").DS.date("d");
     }
 
     public function setFileMovePath():void
     {
-        $this->file_move_path = DIRECTORY_SEPARATOR.$this->config['upload_path'].DIRECTORY_SEPARATOR .$this->getDir();
+        $this->file_move_path = DS.$this->config['upload_path'].DS .$this->getDir();
 
     }
 
@@ -127,8 +129,130 @@ class UploadController extends Controller {
         return $this->file_move_path;
     }
 
+    /**
+     *上传图片文件管理
+     */
+    public function manager()
+    {
+        $up = $this->getUpType();
+
+        try {
+
+            if (!in_array($this->up_type, ['', 'image', 'flash', 'media', 'file'])) {   //kindeditor允许的文件目录名
+                abort(404,"无效的目录名！");
+            }
+
+            $ext_name = $this->getUpType()."_format";
+            $ext_arr  = explode(',', $this->getUpConfig()[$ext_name]);
+
+            if ($up !== '') {
 
 
+                if (!file_exists($this->getRootPath())) {
+                    mkdir($this->root_path);
+                }
+
+                $path = request()->get('path');
+
+                if (empty($path)) {
+
+                    $data = [
+                        'current_path'     => realpath($this->getRootPath()) . DS,
+                        'current_url'      => "",
+                        'current_dir_path' => "",
+                        'moveup_dir_path'  => "",
+                    ];
+
+                } else {
+
+                    $data = [
+                        'current_path'     => realpath($this->getRootPath()) . DS . $path. DS,
+                        'current_url'      => Storage::disk('public')->url($this->config['upload_path'].DS.$this->getUpType().DS.$path),
+                        'current_dir_path' => $path,
+                        'moveup_dir_path'  => preg_replace('/(.*?)[^\/]+\/$/', '$1', $path),
+                    ];
+
+                }
+
+                // 不允许使用..移动到上一级目录
+                if (preg_match('/\.\./', $data['current_path'])) {
+                    abort(403,"不允许访问！");
+                }
+                // 最后一个字符不是/
+                if (!preg_match('/\/$/', $data['current_path'])) {
+                    abort(400,"目录参数不正确");
+                }
+                // 目录不存在或不是目录
+                if (!file_exists($data['current_path']) || !is_dir($data['current_path'])) {
+                    abort(404,"目录不存在！");
+                }
+                // 遍历目录取得文件信息
+                $file_list = [];
+
+                if ($handle = opendir($data['current_path'])) {
+
+
+                    $i = 0;
+                    while (false !== ($filename = readdir($handle))) {
+                        if ($filename{0} == '.') continue;
+                        $file = $data['current_path'] . $filename;
+                        if (is_dir($file)) {
+                            $file_list[$i]['is_dir']   = true; //是否文件夹
+                            $file_list[$i]['has_file'] = (count(scandir($file)) > 2); //文件夹是否包含文件
+                            $file_list[$i]['filesize'] = 0; //文件大小
+                            $file_list[$i]['is_photo'] = false; //是否图片
+                            $file_list[$i]['filetype'] = ''; //文件类别，用扩展名判断
+                        } else {
+                            $file_list[$i]['is_dir']   = false;
+                            $file_list[$i]['has_file'] = false;
+                            $file_list[$i]['filesize'] = filesize($file);
+                            $file_list[$i]['dir_path'] = '';
+                            $file_ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                            $file_list[$i]['is_photo'] = in_array($file_ext, $ext_arr);
+                            $file_list[$i]['filetype'] = $file_ext;
+                        }
+                        $file_list[$i]['filename'] = $filename; //文件名，包含扩展名
+                        $file_list[$i]['datetime'] = date('Y-m-d H:i:s', filemtime($file)); //文件最后修改时间
+                        $i++;
+                    }
+                    closedir($handle);
+                }
+                $file_list = $this->_order_func($file_list, $this->getOrder());
+                //文件列表数组
+                $data['file_list'] = $file_list;
+
+                //输出JSON字符串
+                return json_encode($data);
+
+            }
+        } catch (\Exception $e) {
+            exit($e->getMessage());
+        }
+
+    }
+
+    public function _order_func(&$file_list, $sort_key, $sort = SORT_ASC)
+    {
+        if ($sort_key == 'type') {
+            $sort_key = 'filetype';
+        } else if ($sort_key == 'size') {
+            $sort_key = 'filesize';
+        } else {   //name
+            $sort_key = 'filename';
+        }
+
+        if (is_array($file_list)) {
+            foreach ($file_list as $key => $row_array) {
+                $num[$key] = $row_array[$sort_key];
+            }
+        } else {
+            return false;
+        }
+        //对多个数组或多维数组进行排序
+        array_multisort($num, $sort, $file_list);
+
+        return $file_list;
+    }
 
 
     public function setOrder(string $order):void
@@ -139,6 +263,16 @@ class UploadController extends Controller {
     public function getOrder(): string
     {
         return $this->order;
+    }
+
+    public function setRootPath(string $disk):void
+    {
+        $this->root_path = Storage::disk($disk)->getDriver()->getAdapter()->getPathPrefix().$this->config['upload_path'].DS.$this->getUpType().DS;
+    }
+
+    public function getRootPath():string
+    {
+        return $this->root_path;
     }
 
 

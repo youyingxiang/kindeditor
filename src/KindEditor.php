@@ -33,6 +33,7 @@ class KindEditor extends Field{
         $name = $this->formatName($this->column);
         $upload_url = route("kindeditor.upload");
         $manage_url = route("kindeditor.upload");
+        $delete_url = route("kindeditor.delete");
         $csrf_token = csrf_token();
 
 
@@ -44,6 +45,7 @@ KindEditor.create('textarea[name="$name"]',{
         allowFileManager : true,   //允许对上传图片进行管理
         uploadJson :   '$upload_url', //文件上传地址
         fileManagerJson : '$manage_url',   //文件管理地址
+        deleteUrl  : '$delete_url', //文件删除地址
         //urlType : 'domain',   //带域名的路径
         extraFileUploadParams: {
                 '_token':'$csrf_token'

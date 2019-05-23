@@ -23,7 +23,9 @@ class Editor {
 
             /* @var \Illuminate\Routing\Router $router */
             $router->namespace('Yxx\Kindeditor\Controllers')->group(function ($router) {
-                $router->any('kindeditor/upload','UploadController@upload')->name("kindeditor.upload");
+                $router->match(['get', 'post'],'kindeditor/upload','UploadController@upload')->name("kindeditor.upload");
+                $router->get('kindeditor/manager','UploadController@manager')->name("kindeditor.manager");
+                $router->post('kindeditor/delete','UploadController@delete')->name("kindeditor.delete");
             });
         });
 
