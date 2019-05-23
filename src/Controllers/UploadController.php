@@ -257,8 +257,7 @@ class UploadController extends Controller {
     public function delete()
     {
         $data    = request()->post();
-        $del_url = str_replace("\\",DS,$data['del_url']);
-        $del_url = str_replace(DS."storage",DS,$del_url);
+        $del_url = preg_replace("/[\/|\\\]storage/",'',$data['del_url']);
 
         if ($data['dir'] == 'dir') {
             $del_res = Storage::disk('public')->deleteDirectory($del_url);
