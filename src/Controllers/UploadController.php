@@ -254,6 +254,31 @@ class UploadController extends Controller {
         return $file_list;
     }
 
+    public function delete()
+    {
+        $data    = request()->post();
+
+        $del_url = str_replace(DS."storage",DS,$data['del_url']);
+
+        if ($data['dir'] == 'dir') {
+            $del_res = Storage::disk('public')->deleteDirectory($del_url);
+        } else if ($data['dir'] == 'file') {
+            $del_res = Storage::disk('public')->delete($del_url);
+        }
+        if ($del_res) {   //检测是否删除
+            $res = [
+                'msg'  => '文件删除成功',
+                'code' => 200,
+            ];
+        } else {
+            $res = [
+                'msg'  => '文件删除失败',
+                'code' => 400,
+            ];
+        }
+        return json_encode($res);
+    }
+
 
     public function setOrder(string $order):void
     {

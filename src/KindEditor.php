@@ -23,7 +23,7 @@ class KindEditor extends Field{
 
     // js文件
     protected static $js = [
-        '/vendor/kindeditor/kindeditor/kindeditor-all.js',
+        '/vendor/kindeditor/kindeditor/kindeditor-all.js?version=3.14',
         '/vendor/kindeditor/kindeditor/lang/zh-CN.js',
     ];
 

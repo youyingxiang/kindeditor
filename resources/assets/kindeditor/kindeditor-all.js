@@ -7048,23 +7048,21 @@ KindEditor.plugin('filemanager', function(K) {
 				CrrentDelUrl=$(this).attr("DeUrl");   //删除路径
 				CurrentIsDir=$(this).attr("IsFrd");   //区分文件与文件夹参数传递
 				if (!confirm("确定删除："+CrrentDelUrl+"？")){return false}
-				if(typeof KDEDT_DELETE_URL != 'undefined'){
+
 					$.ajax({
-                        type : "post",
-                        url : KDEDT_DELETE_URL,
-                        dataType : 'json',
-                        data : { del_url:CrrentDelUrl, dir:CurrentIsDir },
-                        success : function(data) {
-                            if(data.code == 200){
-    							$this.parent().parent().remove();
-                            }else{
-                            	alert(data.msg);
-                            }
-                        }
-                    });
-				}else{
-					alert("KDEDT_DELETE_URL 删除地址变量未定义");
-				}
+						type : "post",
+						url : self.deleteUrl,
+						dataType : 'json',
+						data : { del_url:CrrentDelUrl, dir:CurrentIsDir, _token:self.extraFileUploadParams._token},
+						success : function(data) {
+							if(data.code == 200){
+								$this.parent().parent().remove();
+							}else{
+								alert(data.msg);
+							}
+						}
+					});
+
 			});
 		}
 		viewTypeBox.val(viewType);
