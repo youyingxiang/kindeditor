@@ -83,6 +83,71 @@ class UploadController extends Controller {
         if (!in_array($ext,$imgFile_format))
             throw new \Exception("上传文件格式不正确！");
     }
+    /**
+     * @param string $path 目录名称
+     */
+    public function checkDirName(string $path = ''):void
+    {
+        switch (true) {
+            case empty($path):
+                if (!in_array($this->getUpType(), ['', 'image', 'flash', 'media', 'file'])) {
+                    abort(404, "无效的目录名！");
+                }
+                break;
+            case preg_match('/\.\./', $path):
+                abort(403, "不允许访问！");
+                break;
+            case !preg_match('/[\/|\\\]$/', $path):
+                abort(400, "目录参数不正确");
+                break;
+            case !file_exists($path) || !is_dir($path):
+                abort(404, "目录不存在！");
+                break;
+            default:
+                break;
+        }
+
+    }
+    /**
+     * @des 遍历目录取得文件信息
+     * @param $path 目录名称
+     * @return array
+     */
+    public function getDirFileList($path):array
+    {
+        $file_list = [];
+        $ext_name = $this->getUpType()."_format";
+        $ext_arr  = explode(',', $this->getUpConfig()[$ext_name]);
+
+        if ($handle = opendir($path)) {
+            $i = 0;
+            while (false !== ($filename = readdir($handle))) {
+                if ($filename{0} == '.') continue;
+                $file = $path.$filename;
+                if (is_dir($file)) {
+                    $file_list[$i]['is_dir']   = true; //是否文件夹
+                    $file_list[$i]['has_file'] = (count(scandir($file)) > 2); //文件夹是否包含文件
+                    $file_list[$i]['filesize'] = 0; //文件大小
+                    $file_list[$i]['is_photo'] = false; //是否图片
+                    $file_list[$i]['filetype'] = ''; //文件类别，用扩展名判断
+                } else {
+                    $file_list[$i]['is_dir']   = false;
+                    $file_list[$i]['has_file'] = false;
+                    $file_list[$i]['filesize'] = filesize($file);
+                    $file_list[$i]['dir_path'] = '';
+                    $file_ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                    $file_list[$i]['is_photo'] = in_array($file_ext, $ext_arr);
+                    $file_list[$i]['filetype'] = $file_ext;
+                }
+                $file_list[$i]['filename'] = $filename; //文件名，包含扩展名
+                $file_list[$i]['datetime'] = date('Y-m-d H:i:s', filemtime($file)); //文件最后修改时间
+                $i++;
+            }
+            closedir($handle);
+        }
+        return $file_list;
+    }
+
 
     /**
      * @param $type
@@ -132,103 +197,44 @@ class UploadController extends Controller {
     /**
      *上传图片文件管理
      */
+    /**
+     *上传图片文件管理
+     */
     public function manager()
     {
         $up = $this->getUpType();
-
         try {
-
-            if (!in_array($this->up_type, ['', 'image', 'flash', 'media', 'file'])) {   //kindeditor允许的文件目录名
-                abort(404,"无效的目录名！");
-            }
-
-            $ext_name = $this->getUpType()."_format";
-            $ext_arr  = explode(',', $this->getUpConfig()[$ext_name]);
-
+            $this->checkDirName();
             if ($up !== '') {
-
-
                 if (!file_exists($this->getRootPath())) {
                     mkdir($this->root_path);
                 }
-
                 $path = request()->get('path');
 
                 if (empty($path)) {
-
                     $data = [
                         'current_path'     => realpath($this->getRootPath()) . DS,
                         'current_url'      => "",
                         'current_dir_path' => "",
                         'moveup_dir_path'  => "",
                     ];
-
                 } else {
-
                     $data = [
                         'current_path'     => realpath($this->getRootPath()) . DS . $path. DS,
                         'current_url'      => Storage::disk('public')->url($this->config['upload_path'].DS.$this->getUpType().DS.$path),
                         'current_dir_path' => $path,
                         'moveup_dir_path'  => preg_replace('/(.*?)[^\/]+\/$/', '$1', $path),
                     ];
-
                 }
-
-                // 不允许使用..移动到上一级目录
-                if (preg_match('/\.\./', $data['current_path'])) {
-                    abort(403,"不允许访问！");
-                }
-                // 最后一个字符不是/
-                if (!preg_match('/[\/|\\\]$/', $data['current_path'])) {
-                    abort(400,"目录参数不正确");
-                }
-                // 目录不存在或不是目录
-                if (!file_exists($data['current_path']) || !is_dir($data['current_path'])) {
-                    abort(404,"目录不存在！");
-                }
-                // 遍历目录取得文件信息
-                $file_list = [];
-
-                if ($handle = opendir($data['current_path'])) {
-
-
-                    $i = 0;
-                    while (false !== ($filename = readdir($handle))) {
-                        if ($filename{0} == '.') continue;
-                        $file = $data['current_path'] . $filename;
-                        if (is_dir($file)) {
-                            $file_list[$i]['is_dir']   = true; //是否文件夹
-                            $file_list[$i]['has_file'] = (count(scandir($file)) > 2); //文件夹是否包含文件
-                            $file_list[$i]['filesize'] = 0; //文件大小
-                            $file_list[$i]['is_photo'] = false; //是否图片
-                            $file_list[$i]['filetype'] = ''; //文件类别，用扩展名判断
-                        } else {
-                            $file_list[$i]['is_dir']   = false;
-                            $file_list[$i]['has_file'] = false;
-                            $file_list[$i]['filesize'] = filesize($file);
-                            $file_list[$i]['dir_path'] = '';
-                            $file_ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                            $file_list[$i]['is_photo'] = in_array($file_ext, $ext_arr);
-                            $file_list[$i]['filetype'] = $file_ext;
-                        }
-                        $file_list[$i]['filename'] = $filename; //文件名，包含扩展名
-                        $file_list[$i]['datetime'] = date('Y-m-d H:i:s', filemtime($file)); //文件最后修改时间
-                        $i++;
-                    }
-                    closedir($handle);
-                }
+                $this->checkDirName($data['current_path']);
+                $file_list = $this->getDirFileList($data['current_path']);
                 $file_list = $this->_order_func($file_list, $this->getOrder());
-                //文件列表数组
-                $data['file_list'] = $file_list;
-
-                //输出JSON字符串
-                return json_encode($data);
-
+                $data['file_list'] = $file_list;    //文件列表数组
+                return json_encode($data);          //输出JSON字符串
             }
         } catch (\Exception $e) {
             exit($e->getMessage());
         }
-
     }
 
     public function _order_func(&$file_list, $sort_key, $sort = SORT_ASC)
@@ -323,11 +329,5 @@ class UploadController extends Controller {
         echo json_encode($result,JSON_UNESCAPED_UNICODE);
         exit();
     }
-
-
-
-
-
-
 
 }
