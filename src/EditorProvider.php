@@ -17,16 +17,10 @@ class EditorProvider extends ServiceProvider
             // 发布配置文件
             $this->publishes([
                 __DIR__.'/config/editor.php' => config_path('editor.php'),
-                __DIR__.'/../resources/assets' => public_path('vendor/kindeditor')
             ]);
         }
         app('editor')->registerAuthRoutes();
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'kindeditor');
 
-        Admin::booting(function () {
-            Form::extend('kindeditor', KindEditor::class);
-            Form::extend('fileupload', FileUpload::class);
-        });
     }
 
 
