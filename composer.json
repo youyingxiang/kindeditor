@@ -4,7 +4,8 @@
   "type": "library",
   "keywords": ["laravel", "admin", "kindeditor"],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    laravel/framework: "5.5.*"
   },
   "license": "MIT",
   "authors": [
