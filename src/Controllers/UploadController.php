@@ -38,7 +38,7 @@ class UploadController extends Controller {
 
     public function __construct(Request $request)
     {
-        define('DS', DIRECTORY_SEPARATOR);
+        define('DS', "/");
         $type = $request->input('dir','image');
         $this->setUpType($type);
         $this->setUpConfig((array)config('editor.up_config'));
