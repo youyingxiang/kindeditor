@@ -9,16 +9,14 @@ namespace Yxx\Kindeditor\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
-
 class UploadController extends Controller {
+    protected $ds = "/";
     protected $file_move_path;     //上传文件移动服务器位置
     protected $file_back_path;     //上传文件返回文件地址
     protected $up_type;            //上传类型
-
     protected $root_path;          //根目录路径
     protected $root_url;           //根目录URL
     protected $order;              //文件排序
-
     protected $default_config = [
         "image_size"    => 1024*1024*3,                                                 // 上传图片大小
         "file_size"     => 1024*1024*100,                                               // 上传文件大小
@@ -29,25 +27,18 @@ class UploadController extends Controller {
         "media_format"  => "mp3,mp4,avi",                                               // 上传视音频格式
         "flash_format"  => "swf,fla",                                                   // 上传flash格式
         "upload_path"   => "uploads",                                                   // 上传文件目录
-       // "show_domain"   => 1,                                                           // 是否显示带域名的完整路径
+        // "show_domain"   => 1,                                                           // 是否显示带域名的完整路径
     ];
-
-
     protected $config;
-
-
     public function __construct(Request $request)
     {
-        define('DS', "/");
         $type = $request->input('dir','image');
         $this->setUpType($type);
         $this->setUpConfig((array)config('editor.up_config'));
         $this->setFileMovePath();
         $this->setOrder($request->input('order','name'));
         $this->setRootPath("public");
-
     }
-
     public function upload(Request $request)
     {
         try {
@@ -60,24 +51,18 @@ class UploadController extends Controller {
             } else {
                 abort(401, '请选择文件');
             }
-
         } catch (\Exception $e) {
             return $this->ajaxReturn($e->getMessage());
         }
     }
-
     public function check($imgFile) {
         $size = $imgFile->getSize();
         $ext  = $imgFile->getClientOriginalExtension()?:$imgFile->extension();
-
-
         $size_name      = $this->up_type."_size";
         $ext_name       = $this->up_type."_format";
         $config         = $this->getUpConfig();
         $imgfile_size   = $config[$size_name];
         $imgFile_format = explode(",",$config[$ext_name]);
-
-
         if ($imgfile_size < $size)
             throw new \Exception("上传文件过大！");
         if (!in_array($ext,$imgFile_format))
@@ -106,7 +91,6 @@ class UploadController extends Controller {
             default:
                 break;
         }
-
     }
     /**
      * @des 遍历目录取得文件信息
@@ -118,7 +102,6 @@ class UploadController extends Controller {
         $file_list = [];
         $ext_name = $this->getUpType()."_format";
         $ext_arr  = explode(',', $this->getUpConfig()[$ext_name]);
-
         if ($handle = opendir($path)) {
             $i = 0;
             while (false !== ($filename = readdir($handle))) {
@@ -147,8 +130,6 @@ class UploadController extends Controller {
         }
         return $file_list;
     }
-
-
     /**
      * @param $type
      * 获取上传的是图片还是文件还是视频
@@ -158,12 +139,10 @@ class UploadController extends Controller {
     {
         $this->up_type = trim($type);
     }
-
     public function getUpType():string
     {
         return $this->up_type;
     }
-
     /**
      * @param array $config
      * 设置上传参数设置信息 没有用默认的 可以从文件 数据库读取
@@ -172,28 +151,22 @@ class UploadController extends Controller {
     {
         $this->config =  $config ?: $this->default_config;
     }
-
     public function getUpConfig():array
     {
         return $this->config;
     }
-
     public function getDir()
     {
-        return $this->up_type.DS.date("Y").DS.date("m").DS.date("d");
+        return $this->up_type.$this->ds.date("Y").$this->ds.date("m").$this->ds.date("d");
     }
-
     public function setFileMovePath():void
     {
-        $this->file_move_path = DS.$this->config['upload_path'].DS .$this->getDir();
-
+        $this->file_move_path = $this->ds.$this->config['upload_path'].$this->ds.$this->getDir();
     }
-
     public function getFileMovePath():string
     {
         return $this->file_move_path;
     }
-
     /**
      *上传图片文件管理
      */
@@ -210,18 +183,17 @@ class UploadController extends Controller {
                     mkdir($this->root_path);
                 }
                 $path = request()->get('path');
-
                 if (empty($path)) {
                     $data = [
-                        'current_path'     => realpath($this->getRootPath()) . DS,
+                        'current_path'     => realpath($this->getRootPath()) . $this->ds,
                         'current_url'      => "",
                         'current_dir_path' => "",
                         'moveup_dir_path'  => "",
                     ];
                 } else {
                     $data = [
-                        'current_path'     => realpath($this->getRootPath()) . DS . $path. DS,
-                        'current_url'      => Storage::disk('public')->url($this->config['upload_path'].DS.$this->getUpType().DS.$path),
+                        'current_path'     => realpath($this->getRootPath()) . $this->ds . $path. $this->ds,
+                        'current_url'      => Storage::disk('public')->url($this->config['upload_path'].$this->ds.$this->getUpType().$this->ds.$path),
                         'current_dir_path' => $path,
                         'moveup_dir_path'  => preg_replace('/(.*?)[^\/]+\/$/', '$1', $path),
                     ];
@@ -236,7 +208,6 @@ class UploadController extends Controller {
             exit($e->getMessage());
         }
     }
-
     public function _order_func(&$file_list, $sort_key, $sort = SORT_ASC)
     {
         if ($sort_key == 'type') {
@@ -246,7 +217,6 @@ class UploadController extends Controller {
         } else {   //name
             $sort_key = 'filename';
         }
-
         if (is_array($file_list)) {
             foreach ($file_list as $key => $row_array) {
                 $num[$key] = $row_array[$sort_key];
@@ -256,15 +226,12 @@ class UploadController extends Controller {
         }
         //对多个数组或多维数组进行排序
         array_multisort($num, $sort, $file_list);
-
         return $file_list;
     }
-
     public function delete()
     {
         $data    = request()->post();
         $del_url = preg_replace("/[\/|\\\]storage/",'',$data['del_url']);
-
         if ($data['dir'] == 'dir') {
             $del_res = Storage::disk('public')->deleteDirectory($del_url);
         } else if ($data['dir'] == 'file') {
@@ -283,30 +250,22 @@ class UploadController extends Controller {
         }
         return json_encode($res);
     }
-
-
     public function setOrder(string $order):void
     {
         $this->order = strtolower($order);
     }
-
     public function getOrder(): string
     {
         return $this->order;
     }
-
     public function setRootPath(string $disk):void
     {
-        $this->root_path = Storage::disk($disk)->getDriver()->getAdapter()->getPathPrefix().$this->config['upload_path'].DS.$this->getUpType().DS;
+        $this->root_path = Storage::disk($disk)->getDriver()->getAdapter()->getPathPrefix().$this->config['upload_path'].$this->ds.$this->getUpType().$this->ds;
     }
-
     public function getRootPath():string
     {
         return $this->root_path;
     }
-
-
-
     /**
      * @Title: ajaxReturn
      * @Description: todo(ajax提交返回状态信息)
@@ -329,5 +288,4 @@ class UploadController extends Controller {
         echo json_encode($result,JSON_UNESCAPED_UNICODE);
         exit();
     }
-
 }
