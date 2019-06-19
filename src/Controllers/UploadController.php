@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
+    protected $ds = "/";
     protected $file_move_path;     //上传文件移动服务器位置
     protected $file_back_path;     //上传文件返回文件地址
     protected $up_type;            //上传类型
@@ -38,7 +39,6 @@ class UploadController extends Controller {
 
     public function __construct(Request $request)
     {
-        define('DS', "/");
         $type = $request->input('dir','image');
         $this->setUpType($type);
         $this->setUpConfig((array)config('editor.up_config'));
@@ -180,12 +180,12 @@ class UploadController extends Controller {
 
     public function getDir()
     {
-        return $this->up_type.DS.date("Y").DS.date("m").DS.date("d");
+        return $this->up_type.$this->ds.date("Y").$this->ds.date("m").$this->ds.date("d");
     }
 
     public function setFileMovePath():void
     {
-        $this->file_move_path = DS.$this->config['upload_path'].DS .$this->getDir();
+        $this->file_move_path = $this->ds.$this->config['upload_path'].$this->ds.$this->getDir();
 
     }
 
@@ -213,15 +213,15 @@ class UploadController extends Controller {
 
                 if (empty($path)) {
                     $data = [
-                        'current_path'     => realpath($this->getRootPath()) . DS,
+                        'current_path'     => realpath($this->getRootPath()) . $this->ds,
                         'current_url'      => "",
                         'current_dir_path' => "",
                         'moveup_dir_path'  => "",
                     ];
                 } else {
                     $data = [
-                        'current_path'     => realpath($this->getRootPath()) . DS . $path. DS,
-                        'current_url'      => Storage::disk('public')->url($this->config['upload_path'].DS.$this->getUpType().DS.$path),
+                        'current_path'     => realpath($this->getRootPath()) . $this->ds . $path. $this->ds,
+                        'current_url'      => Storage::disk('public')->url($this->config['upload_path'].$this->ds.$this->getUpType().$this->ds.$path),
                         'current_dir_path' => $path,
                         'moveup_dir_path'  => preg_replace('/(.*?)[^\/]+\/$/', '$1', $path),
                     ];
@@ -297,7 +297,7 @@ class UploadController extends Controller {
 
     public function setRootPath(string $disk):void
     {
-        $this->root_path = Storage::disk($disk)->getDriver()->getAdapter()->getPathPrefix().$this->config['upload_path'].DS.$this->getUpType().DS;
+        $this->root_path = Storage::disk($disk)->getDriver()->getAdapter()->getPathPrefix().$this->config['upload_path'].$this->ds.$this->getUpType().$this->ds;
     }
 
     public function getRootPath():string
