@@ -30,7 +30,7 @@ class KindEditor extends Field{
 
     public function render()
     {
-        $name = $this->formatName($this->column);
+        $name = $this->formatId($this->column);
         $upload_url = route("kindeditor.upload");
         $manage_url = route("kindeditor.manager");
         $delete_url = route("kindeditor.delete");
@@ -38,7 +38,7 @@ class KindEditor extends Field{
 
 
         $this->script = <<<EOT
-KindEditor.create('textarea[name="$name"]',{
+KindEditor.create('textarea[id="$name"]',{
         width : '100%',   //宽度
         height : '320px',   //高度
         resizeType : '0',   //禁止拖动

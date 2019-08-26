@@ -247,7 +247,7 @@ class UploadController extends Controller {
             $sort_key = 'filename';
         }
 
-        if (is_array($file_list)) {
+        if (!empty($file_list) && is_array($file_list)) {
             foreach ($file_list as $key => $row_array) {
                 $num[$key] = $row_array[$sort_key];
             }
